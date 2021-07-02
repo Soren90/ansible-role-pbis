@@ -1,0 +1,30 @@
+---
+# defaults file for pbis
+
+# Domain settings / Account
+domain_fqdn: office.contoso.com
+domain_netbios: CONTOSO
+domain_user: USERNAME
+domain_pass: PASSWORD
+domain_admingroup: unix_ux_admin
+domain_ou: OU=Unix,OU=Computers,DC=Contoso,DC=com
+
+domain_creategroups: True
+domain_grouppath: OU=Groups,OU=Computers,DC=Contoso,DC=com
+
+domain_settings:
+  - AssumeDefaultDomain "true"
+  - LoginShellTemplate "/bin/bash"
+  - HomeDirTemplate "%H/%U"
+  - UserDomainPrefix "{{ domain_netbios }}"
+  - Local_HomeDirTemplate "%H/#U"
+  - Local_LoginShellTemplate "/bin/bash"
+  - UserNotAllowedError "You are not authorized to log on to this system, please contact servicedesk.improve@nordlo.com"
+  - CreateHomeDir "true"
+  - SyncSystemTime "false"
+  - DomainManagerIgnoreAllTrusts "true"
+
+# Config settings
+require_membership_of: '"{{ domain_netbios }}\\{{ domain_admingroup }}" "{{ domain_netbios }}\\srv_{{ inventory_hostname }}_auth"'
+
+

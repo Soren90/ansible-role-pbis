@@ -1,0 +1,26 @@
+---
+# Set host: to which group you want to run Nordlo's server standard on.
+- hosts: all
+  become: true
+  tasks:
+
+  vars: 
+
+# PBIS (Active Directory join)
+    domain_fqdn: office.contoso.com
+    domain_netbios: CONTOSO
+    domain_user: USERNAME
+    domain_pass: PASSWORD
+# Domain_admingroup = Group for sudo/ssh access on all linux machines.
+    domain_admingroup: ux_unix_admin
+# domain_ou = Where the linux servers objects are placed
+    domain_ou: OU=Computers,DC=Contoso,DC=com
+# domain_creategroups will create srv_$hostname_sudo, srv_$hostname_auth for each server.
+    domain_creategroups: True
+# Domain_grouppath: This is the location that the groups are stored
+    domain_grouppath: OU=Groups,DC=Contoso,DC=com
+# Require_memership_of: These groups are allowed to ssh to servers:
+    require_membership_of: '"{{ domain_netbios }}\\{{ domain_admingroup }}" "{{ domain_netbios }}\\srv_{{ inventory_hostname }}_auth"'
+
+  roles:
+    - /opt/ansible/roles/pbis

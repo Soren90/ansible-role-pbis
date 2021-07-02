@@ -1,0 +1,48 @@
+---
+# tasks file for pbis
+- include: redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: ubuntu.yml
+  when: ansible_os_family == 'Debian'
+
+- name: PBIS - Set custom config settings
+  shell: /opt/pbis/bin/config {{ item }}
+  with_items: "{{ domain_settings }}"
+
+- name: PBIS -Check the Domain status
+  shell: /opt/pbis/bin/lsa get-status |grep Netbios |awk '{print $3}'
+  register: domain_status
+
+- name: PBIS - Join the machine if it is not already on the domain.
+  command: /usr/bin/domainjoin-cli join --ou "{{ domain_ou }}" {{ domain_fqdn }} {{ domain_user }} {{ domain_pass }}
+  when: domain_status.stdout != "{{ domain_netbios }}"
+
+- name: PBIS - config pbis requiremembershipof
+  command: /opt/pbis/bin/config RequireMembershipOf {{ require_membership_of|lower }}
+
+- name: PBIS -Adding {{ domain_admingroup }} to sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^%{{ domain_admingroup|lower }}'
+    line: "%{{ domain_admingroup|lower }} ALL=(ALL) ALL"
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: PBIS - Adding srv_{{ inventory_hostname|lower }}_sudo to sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^%srv_{{ inventory_hostname|lower }}_sudo'
+    line: "%srv_{{ inventory_hostname|lower }}_sudo ALL=(ALL) ALL"
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: PBIS - Creating srv_{{ inventory_hostname|lower }}_auth auth-group in AD
+  command: /opt/pbis/bin/adtool -a new-group --dn "{{ domain_grouppath }}" --pre-win-2000-name="srv_{{ inventory_hostname|lower }}_auth" --name="srv_{{ inventory_hostname|lower }}_auth" --logon-as="{{ domain_user }}" --passwd="{{ domain_pass }}"
+  when: domain_creategroups == True
+  register: authgroup_result
+  failed_when: "authgroup_result.rc != 100 and authgroup_result.rc != 0"
+
+- name: PBIS - Creating srv_{{ inventory_hostname|lower }}_auth auth-group in AD
+  command: /opt/pbis/bin/adtool -a new-group --dn "{{ domain_grouppath }}" --pre-win-2000-name="srv_{{ inventory_hostname|lower }}_sudo" --name="srv_{{ inventory_hostname|lower }}_sudo" --logon-as="{{ domain_user }}" --passwd="{{ domain_pass }}" 
+  when: domain_creategroups == True
+  register: sudogroup_result
+  failed_when: "sudogroup_result.rc != 100 and sudogroup_result.rc != 0"

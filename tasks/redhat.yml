@@ -1,0 +1,22 @@
+---
+# tasks file for pbis on Redhat
+# repo info available: http://repo.pbis.beyondtrust.com/yum.html
+- name: Redhat | add BeyondTrust PBIS open yum repo
+  yum_repository:
+    name: pbiso
+    description: PBIS-Open Repository
+    baseurl: https://repo.pbis.beyondtrust.com/yum/pbiso/$basearch
+    gpgkey: https://repo.pbis.beyondtrust.com/yum/RPM-GPG-KEY-pbis-1024
+    gpgcheck: yes
+    enabled: yes
+
+- name: Redhat | yum install libnsl
+  yum:
+    name: libnsl
+    state: present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
+
+- name: Redhat | yum install pbis-open
+  yum:
+    name: pbis-open
+    state: present
