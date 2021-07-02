@@ -20,16 +20,22 @@ Role Variables
 
   domain_fqdn: 
   Choose  the FQDN for the AD Default: office.contoso.com
+  
   domain_netbios: 
   Choose netbios name for the AD. DEFAULT:CONTOSO
+  
   domain_user: 
   Your domain username. Default: USERNAME
+  
   domain_pass: 
   Your domain Password: Default: PASSWORD
+  
   domain_admingroup: 
   The domain group for adminprivileges Default: unix_ux_admin
 
-
+  domain_creategroups: True
+  Automatically create groups for each servers (srv_$hostname_auth for login and srv_$hostname_sudo for root access)
+  
 Example Playbook
 ----------------
 
