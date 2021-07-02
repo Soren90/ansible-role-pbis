@@ -5,9 +5,9 @@ Its role is designed to install and configure PBIS-Open with a Microsoft Active 
 
 Compliance
 ----------
-|Redhat|Centos|Debian|Ubuntu 18.04|Ubuntu 20.04|
-|-|-|-|-|-|
-|Unknown|Unknown|Unknown|Unknown|Unknown|
+|RHEL 8|Debian 10|Ubuntu 20.04|
+|-|-|-|
+|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
 
 Requirements
 ------------
