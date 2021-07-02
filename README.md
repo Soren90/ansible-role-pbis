@@ -34,7 +34,7 @@ Role Variables
   The domain group for adminprivileges Default: unix_ux_admin
 
   domain_creategroups: True
-  Automatically create groups for each servers (srv_$hostname_auth for login and srv_$hostname_sudo for root access)
+  Automatically create groups for each servers (srv_$hostname_auth for login and srv_$hostname_sudo for root access) Default: True
   
 Example Playbook
 ----------------

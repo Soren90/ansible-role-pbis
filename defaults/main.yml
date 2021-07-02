@@ -19,7 +19,7 @@ domain_settings:
   - UserDomainPrefix "{{ domain_netbios }}"
   - Local_HomeDirTemplate "%H/#U"
   - Local_LoginShellTemplate "/bin/bash"
-  - UserNotAllowedError "You are not authorized to log on to this system, please contact servicedesk.improve@nordlo.com"
+  - UserNotAllowedError "You are not authorized to log on to this system, please contact your administrator."
   - CreateHomeDir "true"
   - SyncSystemTime "false"
   - DomainManagerIgnoreAllTrusts "true"
